@@ -2,7 +2,7 @@
 
 Controlar registros de metadados personalizados do Salesforce.
 ### Vf page
-StandardController e paginação
+StandardSetController Apex e paginação
 ### Lwc
-Utility bar, necessário criar controller.
+Utility bar, pesquisa pelo nome, edita, cria, etc  (necessário criar controller apex)
 - Basta configurar para qual tipo metadato a controller vai servir, no exemplo foi usado 'C3C_DI_binding__mdt'
