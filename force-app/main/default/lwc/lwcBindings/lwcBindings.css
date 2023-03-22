@@ -1,0 +1,5 @@
+.loading { position: relative; margin: 10%; }
+
+.container {}
+.flex { display: flex; align-items: center; }
+.search { height: 0.5rem; }

@@ -1,0 +1,31 @@
+<apex:page controller="DIBindingController">
+    <apex:form >
+
+        <apex:pageBlock title="DI Bindings" mode="edit" id="bindingTable">
+            <apex:messages />
+
+            <apex:pageBlockButtons >
+            	<apex:commandButton action="{!save}" value="Save" />
+                <apex:commandButton action="{!create}" value="Create" reRender="bindingTable"/>
+            </apex:pageBlockButtons>
+
+            <apex:pageBlockTable value="{!bindings}" var="binding">
+            	<apex:column headerValue="Label">
+                    <apex:inputText value="{!binding.Masterlabel}"/>
+                </apex:column>
+                <apex:column headerValue="Estático?">
+                	<apex:inputCheckbox value="{!binding.Estatico__c}"/>
+                </apex:column>
+                <apex:column headerValue="Classe Apex">
+                	<apex:inputText value="{!binding.ClasseApex__c}"/>
+                </apex:column>
+            </apex:pageBlockTable>
+        </apex:pageBlock>
+
+        <apex:panelGrid columns="2">
+            <apex:commandButton action="{!previous}" value="Previous" reRender="bindingTable" />
+            <apex:commandButton action="{!next}" value="Next" reRender="bindingTable" />
+        </apex:panelGrid>
+
+    </apex:form>
+</apex:page>
