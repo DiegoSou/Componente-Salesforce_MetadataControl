@@ -1,7 +1,10 @@
-<apex:page controller="DIBindingController">
+<!-- Include in app utility bar - Width: 720 | Height: 540 -->
+<apex:page controller="C3C_VFBindingControl">
+    <apex:includeLightning />
+
     <apex:form >
 
-        <apex:pageBlock title="DI Bindings" mode="edit" id="bindingTable">
+        <apex:pageBlock title="Bindings" mode="edit" id="bindingTable">
             <apex:messages />
 
             <apex:pageBlockButtons >

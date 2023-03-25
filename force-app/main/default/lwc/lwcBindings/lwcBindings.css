@@ -3,3 +3,4 @@
 .container {}
 .flex { display: flex; align-items: center; }
 .search { height: 0.5rem; }
+.max-height { max-height: 24rem; }

@@ -40,8 +40,8 @@ export default class LwcBindings extends LightningElement
 
             this.loading = true;
             this.bindings_toSave = [];
-            this.dataMap.forEach((value, key, map) => this.filterBy(value, key, map, '', this.bindings_toSave, 'edited'));
-            console.log(JSON.stringify(this.bindings_toSave));
+            this.dataMap.forEach((value, key, map) => this.filterBy(value, key, map, '', this.bindings_toSave, ''));
+            this.callToSave();
         } catch (e) { console.log(e.message); }
     }
 
@@ -75,23 +75,23 @@ export default class LwcBindings extends LightningElement
 
     keyPressSearch(event) { if(event.keyCode == 13) this.handleSearch(event.currentTarget.value) }
 
-    // Re-preenche um array com os valores no mapa de acordo com um filtro especificado
+    // Re-preenche um array com os valores no mapa de acordo com um filtro especificado || os modificados ficam sempre em primeiro
     filterBy(value, key, map, param, callbackArray, filter) 
     { 
-        switch (filter)
+        if(value.edited) callbackArray.unshift(map.get(key));
+        else
         {
-            case 'masterlabel' :
-                if(value.masterLabel.startsWith(param)) callbackArray.push(map.get(key));
-                break;
-
-            case 'edited' :
-                if(value.edited) callbackArray.push(map.get(key));
-                break;
-
-            case 'added' :
-                callbackArray.unshift(map.get(key));
-                break;
-        }  
+            switch (filter)
+            {
+                case 'masterlabel' :
+                    if(value.masterLabel.startsWith(param)) callbackArray.push(map.get(key));
+                    break;
+    
+                case 'added' :
+                    callbackArray.unshift(map.get(key));
+                    break;
+            }  
+        }
     }
 
     // Salva mudanças no mapa
@@ -136,5 +136,16 @@ export default class LwcBindings extends LightningElement
         temp.estatico = draftBind.estatico;
         
         return temp;
+    }
+
+    // Salva os bindings
+    callToSave()
+    {
+        if(this.loading == true) // Allows re-rendering after save
+        {
+            let service = this.template.querySelector('c-call-service');
+            service.setParams({ 'bindings' : JSON.stringify(this.bindings_toSave) });
+            service.callServiceMethod('save', '', (call) => { if(call.status == 'CompletedSuccess') console.log('true'); });
+        }
     }
 }

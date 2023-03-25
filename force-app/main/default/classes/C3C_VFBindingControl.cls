@@ -1,17 +1,17 @@
-public class DIBindingController 
+public class C3C_VFBindingControl 
 {
-    public class DIBindingControllerException extends Exception {}
+    public class C3C_VFBindingControlException extends Exception {}
 
     private final Integer PAGE_SIZE = 10;
 
     // Mapa de Registros Carregados ->  (São os que serão inseridos, listados, ou que já existem)
-    public Map<String, C3C_DI_biding__mdt> bindingByApiName {get; set;}  
+    public Map<String, C3C_DI_binding__mdt> bindingByApiName {get; set;}  
     
     // Lista de registros na paginação 
-    public List<C3C_DI_biding__mdt> bindings {get; set;}  
+    public List<C3C_DI_binding__mdt> bindings {get; set;}  
 
     // Lista de registros em criação
-    public List<C3C_DI_biding__mdt> tempBindings {get; set;}
+    public List<C3C_DI_binding__mdt> tempBindings {get; set;}
     
     // set controller
     public Apexpages.StandardSetController setCon {
@@ -19,7 +19,7 @@ public class DIBindingController
             if(setCon == null)
             {
                 setCon = new ApexPages.StandardSetController(Database.getQueryLocator(
-                    [SELECT Id, QualifiedApiName, MasterLabel, ClasseApex__c, Estatico__c FROM C3C_DI_biding__mdt]
+                    [SELECT Id, QualifiedApiName, MasterLabel, ClasseApex__c, Estatico__c FROM C3C_DI_binding__mdt]
                 ));
             }
             return setCon;
@@ -27,11 +27,11 @@ public class DIBindingController
         set;
     }
     
-    public DIBindingController()
+    public C3C_VFBindingControl()
     {
-		bindings = new List<C3C_DI_biding__mdt>();
-        tempBindings = new List<C3C_DI_biding__mdt>();
-        bindingByApiName = new Map<String, C3C_DI_biding__mdt>();
+		bindings = new List<C3C_DI_binding__mdt>();
+        tempBindings = new List<C3C_DI_binding__mdt>();
+        bindingByApiName = new Map<String, C3C_DI_binding__mdt>();
         
         setCon.setPageSize(PAGE_SIZE);
         loadBindingItemData();
@@ -39,7 +39,7 @@ public class DIBindingController
 
     public void create() 
     { 
-        tempBindings.add(new C3C_DI_biding__mdt(MasterLabel = '', ClasseApex__c = '', Estatico__c = false)); 
+        tempBindings.add(new C3C_DI_binding__mdt(MasterLabel = '', ClasseApex__c = '', Estatico__c = false)); 
 
         loadBindingItemData(); 
     }
@@ -54,7 +54,7 @@ public class DIBindingController
         // Retrieve Existing Bindings
         for(String recordName : bindingByApiName.keySet())
         {
-            bindingFullNames.add('C3C_DI_biding.' + recordName);  // ["C3C_DI_biding.AccountDomain","C3C_DI_biding.AccountAdapter"]
+            bindingFullNames.add('C3C_DI_binding.' + recordName);  // ["C3C_DI_binding.AccountDomain","C3C_DI_binding.AccountAdapter"]
         } 
         List<Metadata.Metadata> originalRecords = Metadata.Operations.retrieve(
             Metadata.MetadataType.CustomMetadata, bindingFullNames
@@ -63,24 +63,25 @@ public class DIBindingController
         // Add to container
         for(Metadata.Metadata originalRecord : originalRecords)
         {
-            Metadata.CustomMetadata bidingRecord = (Metadata.CustomMetadata) originalRecord;
+            Metadata.CustomMetadata bindingRecord = (Metadata.CustomMetadata) originalRecord;
 
-            String bidingRecordName = bidingRecord.fullName.substringAfter('.');
+            String bindingRecordName = bindingRecord.fullName.substringAfter('.');
             
-            C3C_DI_biding__mdt bidingToCopy = bindingByApiName.get(bidingRecordName);
+            C3C_DI_binding__mdt bindingToCopy = bindingByApiName.get(bindingRecordName);
+            bindingRecord.label = bindingToCopy.MasterLabel;
             
-            for(Metadata.CustomMetadataValue recValue : bidingRecord.values)
+            for(Metadata.CustomMetadataValue recValue : bindingRecord.values)
             {
-                recValue.value = bidingToCopy.get(recValue.field);
+                recValue.value = bindingToCopy.get(recValue.field);
             }
             
-            container.addMetadata(bidingRecord);
+            container.addMetadata(bindingRecord);
         }
 
-        for(C3C_DI_biding__mdt toCreate : tempBindings)
+        for(C3C_DI_binding__mdt toCreate : tempBindings)
         {
             Metadata.CustomMetadata bindingRecord = new Metadata.CustomMetadata();
-            bindingRecord.fullName = 'C3C_DI_biding.' + toCreate.MasterLabel;
+            bindingRecord.fullName = 'C3C_DI_binding.' + toCreate.MasterLabel;
             bindingRecord.label = toCreate.MasterLabel;
             bindingRecord.protected_x = false;
 
@@ -101,7 +102,7 @@ public class DIBindingController
 
     public void loadBindingItemData()
     {
-        bindings = new List<C3C_DI_biding__mdt>(tempBindings);
+        bindings = new List<C3C_DI_binding__mdt>(tempBindings);
 
         for(SObject record : setCon.getRecords())
         {
@@ -109,22 +110,22 @@ public class DIBindingController
             
             if(bindingByApiName.containsKey(qualifiedName))
             {
-                bindings.add((C3C_DI_biding__mdt) bindingByApiName.get(qualifiedName));
+                bindings.add((C3C_DI_binding__mdt) bindingByApiName.get(qualifiedName));
             }
             else
             {
                 // Adiciona na lista que exibe os metadados o metadado existente 
                 // Adiciona no mapa de listados o novo metadado existente
 
-                C3C_DI_biding__mdt newBiding = new C3C_DI_biding__mdt(
+                C3C_DI_binding__mdt newbinding = new C3C_DI_binding__mdt(
                     QualifiedApiName = (String) record.get('QualifiedApiName'),
                     MasterLabel = (String) record.get('MasterLabel'),
                     ClasseApex__c = (String) record.get('ClasseApex__c'),
                     Estatico__c = (Boolean) record.get('Estatico__c')
                 );
 
-                bindings.add(newBiding); 
-                bindingByApiName.put(newBiding.QualifiedApiName, newBiding);
+                bindings.add(newbinding); 
+                bindingByApiName.put(newbinding.QualifiedApiName, newbinding);
             }
         }
 
