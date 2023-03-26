@@ -5,7 +5,7 @@ public class C3C_BindingControlService implements C3C_IBindingControlService {
     public class C3C_BindingsControlServiceException extends Exception {}
 
     public Boolean save(String bindingsJson) 
-    { 
+    {
         try
         {
             Metadata.DeployContainer container = new Metadata.DeployContainer(); // new

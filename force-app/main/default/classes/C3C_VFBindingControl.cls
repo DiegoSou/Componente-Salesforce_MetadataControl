@@ -12,6 +12,9 @@ public class C3C_VFBindingControl
 
     // Lista de registros em criação
     public List<C3C_DI_binding__mdt> tempBindings {get; set;}
+
+    // Parâmetro de pesquisa
+    public String param {get; set;}
     
     // set controller
     public Apexpages.StandardSetController setCon {
@@ -42,6 +45,21 @@ public class C3C_VFBindingControl
         tempBindings.add(new C3C_DI_binding__mdt(MasterLabel = '', ClasseApex__c = '', Estatico__c = false)); 
 
         loadBindingItemData(); 
+    }
+
+    public void filter()
+    {
+        bindings = new List<C3C_DI_binding__mdt>(tempBindings);
+
+        do 
+        {
+            for(SObject binding : setCon.getRecords()) 
+            { if(((C3C_DI_binding__mdt)binding).MasterLabel.startsWithIgnoreCase(param)) bindings.add((C3C_DI_binding__mdt) binding); }   
+            
+            setCon.next();
+        } while(setCon.getHasNext());
+
+        setCon.first();
     }
     
     // Reloads the page
@@ -96,7 +114,9 @@ public class C3C_VFBindingControl
             container.addMetadata(bindingRecord);
         }
         
-        Id asyncResultId = Metadata.Operations.enqueueDeployment(container, null);
+        if(!container.getMetadata().isEmpty() && !Test.isRunningTest()) 
+            Id asyncResultId = Metadata.Operations.enqueueDeployment(container, null);
+
         return;
     }
 
@@ -135,13 +155,13 @@ public class C3C_VFBindingControl
 
     public void Previous() 
     {
-        setCon.previous();
+        if(getHasPrevious()) setCon.previous();
         loadBindingItemData();
     }
 
     public void Next() 
     {
-        setCon.next();
+        if(getHasNext()) setCon.next();
         loadBindingItemData();
     }
 
@@ -151,6 +171,6 @@ public class C3C_VFBindingControl
     }
     public Boolean getHasNext()
     {
-        return setCon.getHasPrevious();
+        return setCon.getHasNext();
     }
 }

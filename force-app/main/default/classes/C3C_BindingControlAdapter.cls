@@ -46,7 +46,7 @@ public virtual without sharing class C3C_BindingControlAdapter extends C3C_APP_S
        get
        {
             if(instanceC3C_IBindingControl == null)
-                instanceC3C_IBindingControl = (C3C_IBindingControlService) Type.forName('C3C_BindingControlService').newInstance();
+                instanceC3C_IBindingControl = (C3C_IBindingControlService) C3C_DIContainer_Injector.getInstance('C3C_BindingControlService');
 
             return instanceC3C_IBindingControl;
        }
