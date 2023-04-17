@@ -1,7 +1,7 @@
 Metadata_Controller
 
 Controlar registros de metadados personalizados do Salesforce.
-### Inclui versão em visualforce, e lwc (mais atualizada e funcional)
+
 - Para usar
 > - <p>Crie um custom metadada chamado C3C_MDT_control e armazene nele registros com o Developer Name (sem o __mdt no final) dos metadados que você deseja controlar. (é necessário criar eles caso não existam)</p>
 > - <p>Precisará mudar as instâncias construídas pela classe C3C_DIContainer_Injector, nos códigos apex, para instâncias construídas a partir de new NomeClasse();</p>

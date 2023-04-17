@@ -4,38 +4,38 @@ public class C3C_MDT_ControlService implements C3C_MDT_IControlService {
 
     public String metadatas(String key) 
     { 
-        return JSON.serialize
-        (
-            this.instanceC3C_MDT_IControlSelector.setGeneric(key).getAllMDTs() 
-        ); 
+        return JSON.serialize(instanceC3C_MDT_IControlSelector.setDomainInstance(key).getAllMDTs()); 
     } 
     
     public String columns(String key) 
-    { 
-        return JSON.serialize
-        (
-            ((C3C_MDT_ControlDomain) C3C_DIContainer_Injector.newInstance('C3C_MDT_ControlDomain')).setDeveloperName(key).setMdtFieldMap().getFieldNameByDataType()
+    {   
+        return JSON.serialize(
+            ((C3C_MDT_ControlDomain) C3C_DIContainer_Injector.newInstance('C3C_MDT_ControlDomain')).defineMetadataInstance(key).fieldNameByDataType
         ); 
     }
 
     public void save(String key, String listjson)
     {
-        Metadata.DeployContainer container = new Metadata.DeployContainer();
+        try
+        {
+            Metadata.DeployContainer container = new Metadata.DeployContainer();
+            C3C_MDT_ControlDomain domain = ((C3C_MDT_ControlDomain) C3C_DIContainer_Injector.newInstance('C3C_MDT_ControlDomain')).defineMetadataInstance(key);
 
-        C3C_MDT_ControlDomain domain = ((C3C_MDT_ControlDomain) C3C_DIContainer_Injector.newInstance('C3C_MDT_ControlDomain')).setDeveloperName(key);
-
-        for(String mdtJson : (List<String>) JSON.deserialize(listjson, List<String>.class)) { container.addMetadata(domain.buildCustomMetadataByInstance(mdtJson)); }
-        
-        System.debug('Custom Metadata Container | ' + container);
-
-        Id asyncResult = Metadata.Operations.enqueueDeployment(container, null);
+            for(String mdtJson : (List<String>) JSON.deserialize(listjson, List<String>.class)) { container.addMetadata(domain.buildCustomMetadataByInstanceJSON(mdtJson)); }
+            
+            System.debug('Custom Metadata Container | ' + container);
+            Id asyncResult = Metadata.Operations.enqueueDeployment(container, null);
+            
+        } catch(Exception e) { throw new C3C_MDT_ControlServiceException('Erro ao salvar os metadados: ' + e.getMessage() + ' | Linha: ' + e.getLineNumber()); }
     }
 
     private C3C_MDT_IControlSelector instanceC3C_MDT_IControlSelector {
         get
         {
             if(instanceC3C_MDT_IControlSelector == null)
-                instanceC3C_MDT_IControlSelector = (C3C_MDT_IControlSelector) C3C_DIContainer_Injector.getInstance('C3C_MDT_ControlSelector');
+            {
+                instanceC3C_MDT_IControlSelector = (C3C_MDT_IControlSelector) Type.forName('C3C_MDT_ControlSelector').newInstance();
+            }
 
             return instanceC3C_MDT_IControlSelector;
         }
