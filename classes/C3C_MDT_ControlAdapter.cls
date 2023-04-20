@@ -1,41 +1,36 @@
-public virtual without sharing class C3C_MDT_ControlAdapter extends C3C_APP_ServiceApplicationAdapter
+public virtual without sharing class C3C_MDT_ControlAdapter
 {
-    public override Map<String,String> getMapServiceMethodToClassMethod() 
+    private static Map<String,String> serviceMethodToClassMethod = new Map<String, String> 
     {
-        return new Map<String, String> {
-            'getMetadatas' => 'C3C_MDT_ControlAdapter.ADP_Metadatas',
-            'getColumns' => 'C3C_MDT_ControlAdapter.ADP_Columns',
-            'saveMetadatas' => 'C3C_MDT_ControlAdapter.ADP_Save'
-        };
-    }
+        'getMetadatas' => 'C3C_MDT_ControlAdapter.ADP_Metadatas',
+        'getColumns' => 'C3C_MDT_ControlAdapter.ADP_Columns',
+        'saveMetadatas' => 'C3C_MDT_ControlAdapter.ADP_Save'
+    };
 
     public class ADP_Metadatas extends ClassMethod
     {
-        public override void callMethod()
+        public override ClassMethod callMethod(Map<String, Object> methodParams)
         {
-            Map<String, String> mapParams = C3C_APP_ApplicationContext.getBody();
-
-            C3C_APP_ApplicationContext.setResponse(instanceC3C_MDT_IControlService.metadatas(mapParams.get('mdtlabel')));
+            this.methodResponse = instanceC3C_MDT_IControlService.metadatas((String) methodParams.get('mdtlabel'));
+            return this;
         }
     }
 
     public class ADP_Columns extends ClassMethod
     {
-        public override void callMethod()
+        public override ClassMethod callMethod(Map<String, Object> methodParams)
         {
-            Map<String, String> mapParams = C3C_APP_ApplicationContext.getBody();
-
-            C3C_APP_ApplicationContext.setResponse(instanceC3C_MDT_IControlService.columns(mapParams.get('mdtlabel')));
+            this.methodResponse = instanceC3C_MDT_IControlService.columns((String) methodParams.get('mdtlabel'));
+            return this;
         }
     }
 
     public class ADP_Save extends ClassMethod
     {
-        public override void callMethod()
+        public override ClassMethod callMethod(Map<String, Object> methodParams)
         {
-            Map<String, String> mapParams = C3C_APP_ApplicationContext.getBody();
-
-            instanceC3C_MDT_IControlService.save(mapParams.get('mdtlabel'), mapParams.get('listjson'));
+            instanceC3C_MDT_IControlService.save((String) methodParams.get('mdtlabel'), (String) methodParams.get('listjson'));
+            return this;
         }
     }
 
@@ -44,11 +39,35 @@ public virtual without sharing class C3C_MDT_ControlAdapter extends C3C_APP_Serv
     {
         get 
         {
-            if(instanceC3C_MDT_IControlService == null)
-                instanceC3C_MDT_IControlService = (C3C_MDT_IControlService) C3C_DIContainer_Injector.getInstance('C3C_MDT_ControlService');
+            if(instanceC3C_MDT_IControlService == null) 
+            {
+                instanceC3C_MDT_IControlService = (C3C_MDT_IControlService) Type.forName('C3C_MDT_ControlService').newInstance(); 
+            }
 
             return instanceC3C_MDT_IControlService;
         }
         set;
+    }
+
+    // Call service
+    @AuraEnabled
+    public static String callServiceMethod(String methodName, Map<String, Object> methodParams) 
+    {
+        if(!serviceMethodToClassMethod.containsKey(methodName)) { throw new C3C_MDT_ControlAdapterException('Método não definido - ' + methodName); }
+
+        return (
+            (ClassMethod) Type.forName(serviceMethodToClassMethod.get(methodName))
+            .newInstance()
+        )
+        .callMethod(methodParams)
+        .methodResponse;
+    }
+
+    // Class method
+    public class C3C_MDT_ControlAdapterException extends Exception {}
+    public abstract class ClassMethod 
+    { 
+        public String methodResponse { get{ return methodResponse == null ? '' : methodResponse; } protected set; }
+        public abstract ClassMethod callMethod(Map<String, Object> methodParams); 
     }
 }

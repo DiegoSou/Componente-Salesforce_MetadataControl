@@ -1,4 +1,5 @@
 import { LightningElement, api } from 'lwc';
+import callServiceMethod from '@salesforce/apex/C3C_MDT_ControlAdapter.callServiceMethod';
 
 export default class LwcBindings extends LightningElement 
 {   
@@ -30,10 +31,12 @@ export default class LwcBindings extends LightningElement
             this.loading = true;
             this.dataMap = null;
 
-            let service = this.template.querySelector('c-call-service');
-            
-            service.setParams({ 'mdtlabel' : this.dev_name });
-            service.callServiceMethod('getMetadatas', '', (call) => { if(call.status == 'CompletedSuccess') this.handleCallToRetrieve(call.response); });
+            callServiceMethod({
+                methodName : 'getMetadatas',
+                methodParams : { mdtlabel : this.dev_name }
+            })
+            .then((resultJson) => this.handleCallToRetrieve(resultJson))
+            .catch((error) => console.log(error));
         }
     }
 
@@ -120,9 +123,12 @@ export default class LwcBindings extends LightningElement
         {
             for(let i in datatable.draftValues)
             {       
+                
                 let newMdt = datatable.draftValues[i];
+                console.log('New mdt - ', newMdt) 
                 let tempRecord = this.constructEditedMetadata(newMdt, this.dataMap.get(newMdt['QualifiedApiName'])); 
 
+                console.log('Temp record - ', tempRecord)
                 this.dataMap.set(tempRecord.QualifiedApiName, tempRecord);
             }
         } catch(e) { console.log(e.message); }
@@ -135,9 +141,12 @@ export default class LwcBindings extends LightningElement
         {
             this.loading = true;
 
-            let service = this.template.querySelector('c-call-service');
-            service.setParams({ 'mdtlabel' : this.dev_name, 'listjson' : JSON.stringify(this.mdts_toSave) });
-            service.callServiceMethod('saveMetadatas', '', () => { this.retrieveMetadatas(); });
+            callServiceMethod({
+                methodName : 'saveMetadatas',
+                methodParams : { mdtlabel : this.dev_name, listjson : JSON.stringify(this.mdts_toSave) }
+            })
+            .then((result) => this.retrieveMetadatas())
+            .catch((error) => console.log(error));
         } else { this.loading = false; }
     }
 
@@ -152,7 +161,7 @@ export default class LwcBindings extends LightningElement
             let col = this.columns[i].fieldName;  // Campo do metadado, incluindo __c
 
             // Verifica se o novo registro possui o campo atualizado
-            if(this.columns[i].type == 'boolean') { temp[col] = newMdt[col] !== undefined ? newMdt[col] : false; }
+            if(this.columns[i].type == 'boolean') { temp[col] = String(newMdt[col]) !== 'undefined' ? newMdt[col] : temp[col]; }
             else { temp[col] = newMdt[col] ? newMdt[col] : temp[col]; }            
         }
         temp['Edited'] = true;

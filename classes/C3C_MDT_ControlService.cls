@@ -10,7 +10,7 @@ public class C3C_MDT_ControlService implements C3C_MDT_IControlService {
     public String columns(String key) 
     {   
         return JSON.serialize(
-            ((C3C_MDT_ControlDomain) C3C_DIContainer_Injector.newInstance('C3C_MDT_ControlDomain')).defineMetadataInstance(key).fieldNameByDataType
+            new C3C_MDT_ControlDomain().defineMetadataInstance(key).fieldNameByDataType
         ); 
     }
 
@@ -19,7 +19,7 @@ public class C3C_MDT_ControlService implements C3C_MDT_IControlService {
         try
         {
             Metadata.DeployContainer container = new Metadata.DeployContainer();
-            C3C_MDT_ControlDomain domain = ((C3C_MDT_ControlDomain) C3C_DIContainer_Injector.newInstance('C3C_MDT_ControlDomain')).defineMetadataInstance(key);
+            C3C_MDT_ControlDomain domain = new C3C_MDT_ControlDomain().defineMetadataInstance(key);
 
             for(String mdtJson : (List<String>) JSON.deserialize(listjson, List<String>.class)) { container.addMetadata(domain.buildCustomMetadataByInstanceJSON(mdtJson)); }
             

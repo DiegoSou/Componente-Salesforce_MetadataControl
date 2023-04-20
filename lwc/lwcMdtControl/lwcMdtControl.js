@@ -1,4 +1,5 @@
 import { LightningElement, api } from 'lwc';
+import callServiceMethod from '@salesforce/apex/C3C_MDT_ControlAdapter.callServiceMethod';
 
 // serve para preencher duas variáveis: o metadado selecionado, e as colunas (representando campos) deste metadado
 export default class MdtControl extends LightningElement 
@@ -19,9 +20,12 @@ export default class MdtControl extends LightningElement
         // Prevents re-reloading
         if(this.loading)
         {
-            let service = this.template.querySelector('c-call-service');
-            service.setParams({ 'mdtlabel' : 'C3C_MDT_control' })
-            service.callServiceMethod('getMetadatas', '', (call) => { if(call.status == 'CompletedSuccess') this.handleCallToGetMetadatas(call.response); });
+            callServiceMethod({ 
+                methodName : 'getMetadatas',
+                methodParams : { mdtlabel : 'C3C_MDT_control' } 
+            })
+            .then((resultJson) => this.handleCallToGetMetadatas(resultJson))
+            .catch((error) => console.log(error));
         }
     }
 
@@ -51,18 +55,12 @@ export default class MdtControl extends LightningElement
         // Prevents unnecessary call
         if(this.mdt_selected)
         {
-            let service = this.template.querySelector('c-call-service');
-            service.setParams({ 'mdtlabel' : this.mdt_selected });
-
-            service.callServiceMethod('getColumns', '', (call) => {
-                if(call.status == 'CompletedSuccess') 
-                {
-                    this.mdt_columns = call.response  // seta columns ainda em formato json
-                    
-                    // termina toda funcionalidade do componente | manda evento
-                    this.dispatchEvent(new CustomEvent('generatedcolumns'));  
-                }
-            });
+            callServiceMethod({ 
+                methodName : 'getColumns', 
+                methodParams : { mdtlabel : this.mdt_selected } 
+            })
+            .then((resultJson) => { this.mdt_columns = resultJson; this.dispatchEvent(new CustomEvent('generatedcolumns')); })
+            .catch((error) => console.log(error));
         }
     }
 
