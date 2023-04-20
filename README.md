@@ -6,7 +6,7 @@ Controlar registros de metadados personalizados do Salesforce.
 > - <p>Crie um custom metadada chamado C3C_MDT_control e criar nele registros com o Developer Name (sem o __mdt no final) dos metadados que você deseja controlar. (é necessário criar os objetos dos metadados caso eles não existam)</p>
 > - <p> Colocar o componente lwc "configureMdt" na utilitybar dos aplicativos do lightning </p>
 > - ( Criador de aplicativo do Lightning > Gerenciador de Aplicativos > Seleciona "Editar" para o aplicativo > Itens de utilitários)
-> - <p> Para campos de data, utilizar data/hora (datetime) para o tipo do campo no metadado </p>
+> - <p> Para campos de data (date), utilizar data/hora (datetime) para o tipo do campo no metadado </p>
 
 <p>...</p>
 
