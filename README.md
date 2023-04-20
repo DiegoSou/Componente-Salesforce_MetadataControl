@@ -8,7 +8,7 @@ Controlar registros de metadados personalizados do Salesforce.
 > - ( Criador de aplicativo do Lightning > Gerenciador de Aplicativos > Seleciona "Editar" para o aplicativo > Itens de utilitários)
 > - <p> Para campos de data (date), utilizar data/hora (datetime) para o tipo do campo no metadado </p>
 
-<p>...</p>
+<p>---</p>
 
 <img src="https://user-images.githubusercontent.com/79648814/233227105-babbf2cf-179d-4c78-8c28-b72e6ca31f9f.png"></img>
 
