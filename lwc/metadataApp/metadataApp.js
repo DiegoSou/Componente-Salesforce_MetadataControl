@@ -3,23 +3,23 @@ import { LightningElement } from 'lwc';
 const nonEditableFields = new Set(['Id', 'QualifiedApiName', 'DeveloperName']);
 const nonListedFields = new Set(['attributes']);
 
-export default class ConfigureMdt extends LightningElement 
+export default class MetadataApp extends LightningElement 
 {
     mdt_control;
-    lwc_metadatas;
+    mdt_viewer;
 
     renderedCallback() 
     {
-        this.mdt_control =  this.template.querySelector('c-lwc-mdt-control');
-        this.lwc_metadatas = this.template.querySelector('c-lwc-metadatas');
+        this.mdt_control =  this.template.querySelector('c-metadata-control');
+        this.mdt_viewer = this.template.querySelector('c-metadata-viewer');
     }
 
     handleSelected(event) 
     {  
-        this.lwc_metadatas.setDevName(this.mdt_control.getSelected());
-        this.lwc_metadatas.setColumns(this.formatColumns(JSON.parse(this.mdt_control.getColumns())));
+        this.mdt_viewer.setDevName(this.mdt_control.getSelected());
+        this.mdt_viewer.setColumns(this.formatColumns(JSON.parse(this.mdt_control.getColumns())));
 
-        this.lwc_metadatas.retrieveMetadatas();
+        this.mdt_viewer.retrieveMetadatas();
     }
 
     // Formata as colunas pro modelo datatable

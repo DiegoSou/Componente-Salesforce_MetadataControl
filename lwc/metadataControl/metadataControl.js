@@ -2,7 +2,7 @@ import { LightningElement, api } from 'lwc';
 import callServiceMethod from '@salesforce/apex/C3C_MDT_ControlAdapter.callServiceMethod';
 
 // serve para preencher duas variáveis: o metadado selecionado, e as colunas (representando campos) deste metadado
-export default class MdtControl extends LightningElement 
+export default class MetadataControl extends LightningElement 
 {
     mdt_selected; // Metadado selecionado
     mdt_columns;  // Colunas do metadado selecionado      
@@ -25,7 +25,7 @@ export default class MdtControl extends LightningElement
                 methodParams : { mdtlabel : 'C3C_MDT_control' } 
             })
             .then((resultJson) => this.handleCallToGetMetadatas(resultJson))
-            .catch((error) => console.log(error));
+            .catch((error) => console.log(error.message));
         }
     }
 
@@ -60,7 +60,7 @@ export default class MdtControl extends LightningElement
                 methodParams : { mdtlabel : this.mdt_selected } 
             })
             .then((resultJson) => { this.mdt_columns = resultJson; this.dispatchEvent(new CustomEvent('generatedcolumns')); })
-            .catch((error) => console.log(error));
+            .catch((error) => console.log(error.message));
         }
     }
 

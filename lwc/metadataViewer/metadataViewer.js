@@ -1,7 +1,7 @@
 import { LightningElement, api } from 'lwc';
 import callServiceMethod from '@salesforce/apex/C3C_MDT_ControlAdapter.callServiceMethod';
 
-export default class LwcBindings extends LightningElement 
+export default class MetadataViewer extends LightningElement 
 {   
     dev_name;           // Dev name do metadado utilizado   
     columns;            // Campos do metadado utilizado
@@ -36,7 +36,7 @@ export default class LwcBindings extends LightningElement
                 methodParams : { mdtlabel : this.dev_name }
             })
             .then((resultJson) => this.handleCallToRetrieve(resultJson))
-            .catch((error) => console.log(error));
+            .catch((error) => console.log(error.message));
         }
     }
 
@@ -146,7 +146,7 @@ export default class LwcBindings extends LightningElement
                 methodParams : { mdtlabel : this.dev_name, listjson : JSON.stringify(this.mdts_toSave) }
             })
             .then((result) => this.retrieveMetadatas())
-            .catch((error) => console.log(error));
+            .catch((error) => console.log(error.message));
         } else { this.loading = false; }
     }
 
