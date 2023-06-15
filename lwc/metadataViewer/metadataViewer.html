@@ -5,7 +5,7 @@
         </div>
 
         <div if:false={loading} class="flex">
-            <input data-id="inputfield" value='' placeholder="Pesquisar Bindings" onkeypress={keyPressSearch} class="slds-input slds-p-around_x-small slds-m-around_x-small search" title="Pressione enter para pesquisar"></input>
+            <input data-id="inputfield" value='' placeholder="Pesquisar por nome" onkeypress={keyPressSearch} class="slds-input slds-p-around_x-small slds-m-around_x-small search" title="Pressione enter para pesquisar"></input>
             <lightning-button-icon icon-name="utility:add" onclick={handleAdd} variant="brand" size="medium" class="slds-m-around_xxx-small slds-align_absolute-center" title="Adicionar novo"></lightning-button-icon>
             <lightning-button-icon icon-name="utility:save" onclick={handleCallToSave} variant="brand" size="medium" class="slds-m-right_x-small slds-m-left_xx-small slds-align_absolute-center" title="Salvar"></lightning-button-icon>
         </div>
