@@ -24,7 +24,7 @@ public class C3C_MDT_ControlService implements C3C_MDT_IControlService {
             for(String mdtJson : (List<String>) JSON.deserialize(listjson, List<String>.class)) { container.addMetadata(domain.buildCustomMetadataByInstanceJSON(mdtJson)); }
             
             System.debug('Custom Metadata Container | ' + container);
-            Id asyncResult = Metadata.Operations.enqueueDeployment(container, null);
+            if(!Test.isRunningTest()) { Metadata.Operations.enqueueDeployment(container, null); }
             
         } catch(Exception e) { throw new C3C_MDT_ControlServiceException('Erro ao salvar os metadados: ' + e.getMessage() + ' | Linha: ' + e.getLineNumber()); }
     }
