@@ -33,17 +33,17 @@ export default class MetadataControl extends LightningElement
     handleCallToGetMetadatas(response)
     {
         response = JSON.parse(response);
-        if(response.length > 0) { this.generateHtmlSelect(response.map((v) => v.MasterLabel)); }
+        if(response.length > 0) { this.generateHtmlSelect(response.map((v) => Object.create({ devName : v.DeveloperName, label : v.MasterLabel }))); }
     }
 
     // Gera uma tag select com cada option representando um metadado disponível
-    generateHtmlSelect(masterlabels)
+    generateHtmlSelect(metadataObjs)
     {
         let htmlvalue = '';
         let container = this.template.querySelector('div[data-id="select-container"]');
         
         htmlvalue = '<div class="slds-select_container"><select class="slds-select" id="select-01" required="">';
-        masterlabels.forEach((label) => {htmlvalue += '<option value="'+label+'">'+label+'</option>'});
+        metadataObjs.forEach((obj) => {htmlvalue += '<option value="'+obj.devName+'">'+obj.label+'</option>'});
         htmlvalue += '</select></div>';
 
         container.innerHTML = htmlvalue;
